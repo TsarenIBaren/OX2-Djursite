@@ -1,22 +1,23 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from 'vue'
 import { RouterView } from 'vue-router'
-import AnimalSidebar from './components/AnimalSidebar.vue';
-import { Images } from '/src/assets/scripts/resourceApi.js';
+import AnimalSidebar from './components/AnimalSidebar.vue'
+import OutdoorActivites from './components/OutdoorActivites.vue'
+import { Images } from '/src/assets/scripts/resourceApi.js'
 
-const logo = ref(null);
-const bg = ref(null);
+const logo = ref(null)
+const bg = ref(null)
 
-const mobileBreakpoint = 768;
-const mobile = ref(window.innerWidth < mobileBreakpoint);
+const mobileBreakpoint = 768
+const mobile = ref(window.innerWidth < mobileBreakpoint)
 
 window.addEventListener('resize', () => {
-  mobile.value = window.innerWidth < mobileBreakpoint;
-});
+  mobile.value = window.innerWidth < mobileBreakpoint
+})
 
 onMounted(async () => {
-  bg.value = await Images(158);
-  logo.value = await Images(183);
+  bg.value = await Images(158)
+  logo.value = await Images(183)
   logo.value = logo.value[0][0]
 })
 </script>
@@ -26,17 +27,18 @@ onMounted(async () => {
   <div id="mainwrapper">
     <header>
       <nav>
-        <img :src="logo" height="50px">
+        <RouterLink to="/"><img :src="logo" height="50px" /></RouterLink>
       </nav>
     </header>
     <div id="contentwrapper">
-      <AnimalSidebar :mobile="mobile"/>
-      <main id="content" class="box">
-        BÄBÄ VIT LAMMET
-        <br>
-        <iframe src="https://www.youtube.com/embed/w9uJg68CV4g" title="Live Video"></iframe>
+      <AnimalSidebar :mobile="mobile" />
+      <div class="content box">
         <RouterView />
-      </main>
+        <iframe src="https://www.youtube.com/embed/w9uJg68CV4g" title="Live Video"></iframe>
+      </div>
+      <div class="content box">
+        <OutdoorActivites />
+      </div>
     </div>
   </div>
 </template>
@@ -70,6 +72,11 @@ nav {
 .box {
   border-radius: 0.5em;
   padding: 0.5em;
+  margin: 0.5em;
+}
+
+.full {
+  flex-basis: 100%;
 }
 
 #mainwrapper {
@@ -84,10 +91,10 @@ nav {
   flex-wrap: wrap;
 }
 
-#content {
+.content {
   background-color: hsl(0, 0%, 100%);
+  border: 0.25em solid hsl(0, 0%, 95%);
   position: relative;
   flex-grow: 1;
-
 }
 </style>
