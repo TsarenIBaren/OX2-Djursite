@@ -21,7 +21,8 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <div id="window" :style="bg ? `background-image: url(${bg[0][0]});` : ''" />
+  <div class="cover" id="bg" :style="bg ? `background-image: url(${bg[0][0]});` : ''" />
+  <div class="cover" id="fg" />
   <div id="mainwrapper">
     <header>
       <nav>
@@ -33,7 +34,7 @@ onMounted(async () => {
       <main id="content" class="box">
         BÄBÄ VIT LAMMET
         <br>
-        <iframe src="https://www.youtube.com/watch?v=w9uJg68CV4g&ab_channel=SkyNews" title="Live Video"></iframe>
+        <iframe src="https://www.youtube.com/embed/w9uJg68CV4g" title="Live Video"></iframe>
         <RouterView />
       </main>
     </div>
@@ -41,14 +42,21 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-#window {
+.cover {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+#bg {
   background-size: cover;
   background-position: center bottom;
+}
+
+#fg {
+  background-color: hsla(0, 0%, 50%, 0.2);
 }
 
 nav {

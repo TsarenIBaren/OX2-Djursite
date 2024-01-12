@@ -17,20 +17,24 @@ onMounted(async () => {
             labelElem?.classList.add('sb-label-active');
         }
 
-        if (elem.classList.contains('category')) {
-            labelElem = elem.children[0].children[0]
-            labelElem?.classList.add('sb-label-active');
-        }
-
         if (elem.parentElement?.classList?.contains('category')) {
-            labelElem = elem.parentElement.children[0].children[0]
-            labelElem?.classList.add('sb-label-active');
+            if (elem.tagName == 'IMG') {
+                labelElem = elem.parentElement.children[0].children[0]
+                labelElem?.classList.add('sb-label-active');
+            }
         }
 
         for (let elem of document.getElementsByClassName('sb-label-active')) {
             if (elem !== labelElem) {
                 elem.classList.remove('sb-label-active');
+                elem.style.width = '';
             }
+        }
+
+        if (labelElem) {
+            const computedStyle = getComputedStyle(labelElem)
+            const labelElemWidth = labelElem.scrollWidth - parseFloat(computedStyle.paddingLeft) - parseFloat(computedStyle.paddingRight);
+            labelElem.style.width = `${labelElemWidth}px`;
         }
     });
 });
@@ -54,13 +58,8 @@ onMounted(async () => {
 .category {
     position: relative;
     margin: 0.25em;
-    transition: transform 0.125s ease-in-out;
     z-index: 100;
     
-}
-
-.category:hover {
-    transform: scale(105%);
 }
 
 .wide {
@@ -77,6 +76,11 @@ onMounted(async () => {
     height: 6em;
     width: 6em;
     z-index: 102;
+    transition: transform 0.125s ease-in-out;
+}
+
+.category > img:hover {
+    transform: scale(105%); 
 }
 
 .category > div {
@@ -99,10 +103,9 @@ onMounted(async () => {
     white-space: nowrap;
     overflow: hidden;
     width: 0px;
-    transition: width 0.25s ease-in-out, padding-left 0.25s ease-in-out;
+    transition: width 0.125s ease-out, padding-left 0.25s ease-in;
 }
 .sb-label-active {
     padding-left: 3.5em;
-    width: fit-content;
 }
 </style>
