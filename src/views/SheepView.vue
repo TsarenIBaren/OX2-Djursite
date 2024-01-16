@@ -3,6 +3,6 @@
 
 <template>
   <main>
-    <h2>SHEEP</h2>
+    <h1>SHEEP</h1>
   </main>
 </template>

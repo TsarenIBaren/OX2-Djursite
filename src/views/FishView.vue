@@ -3,6 +3,6 @@
 
 <template>
   <main>
-    <h2>FISH</h2>
+    <h1>FISH</h1>
   </main>
 </template>

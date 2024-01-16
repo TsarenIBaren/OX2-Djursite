@@ -12,12 +12,12 @@ onMounted(async () => {
     const elem = document.elementFromPoint(e.clientX, e.clientY)
     let labelElem
 
-    if (elem.classList.contains('sb-label')) {
+    if (elem?.classList?.contains('sb-label')) {
       labelElem = elem
       labelElem?.classList.add('sb-label-active')
     }
 
-    if (elem.parentElement?.classList?.contains('category')) {
+    if (elem?.parentElement?.classList?.contains('category')) {
       if (elem.tagName == 'IMG') {
         labelElem = elem.parentElement.children[0].children[0]
         labelElem?.classList.add('sb-label-active')

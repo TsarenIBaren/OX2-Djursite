@@ -15,6 +15,24 @@ window.addEventListener('resize', () => {
   mobile.value = window.innerWidth < mobileBreakpoint
 })
 
+document.addEventListener('mousemove', (e) => {
+  const background = document.getElementById('bg');
+  const amount = 100;
+
+  if (!mobile.value) {
+    background.style.left = `${-amount-(e.clientX/window.innerWidth*amount)}px`;
+    background.style.top = `${-amount-(e.clientY/window.innerHeight*amount)}px`;
+    background.style.right = `${-amount+(e.clientX/window.innerWidth*amount)}px`;
+    background.style.bottom = `${-amount+(e.clientY/window.innerHeight*amount)}px`;
+
+  } else {
+    background.style.left = '';
+    background.style.top = '';
+    background.style.right = '';
+    background.style.bottom = '';
+  }
+})
+
 onMounted(async () => {
   bg.value = await Images(158)
   logo.value = await Images(183)
@@ -31,14 +49,13 @@ onMounted(async () => {
       </nav>
     </header>
     <div id="contentwrapper">
-      <AnimalSidebar :mobile="mobile" />
-      <div class="content box">
-        <RouterView />
-        <iframe src="https://www.youtube.com/embed/w9uJg68CV4g" title="Live Video"></iframe>
-      </div>
-      <div class="content box">
-        <OutdoorActivites />
-      </div>
+        <AnimalSidebar :mobile="mobile" />
+        <div id="infobox" class="content box">
+          <RouterView />
+        </div>
+    </div>
+    <div class="content box">
+      <OutdoorActivites />
     </div>
   </div>
 </template>
@@ -75,10 +92,6 @@ nav {
   margin: 0.5em;
 }
 
-.full {
-  flex-basis: 100%;
-}
-
 #mainwrapper {
   position: relative;
   left: 50%;
@@ -92,9 +105,16 @@ nav {
 }
 
 .content {
-  background-color: hsl(0, 0%, 100%);
-  border: 0.25em solid hsl(0, 0%, 95%);
+  background-color: hsla(0, 0%, 50%, 0.5);
+  border: 0.25em solid hsl(0, 0%, 100%);
   position: relative;
+  color: white;
+  text-align: center;
+  overflow: hidden;
+}
+
+#infobox {
+  flex-basis: 50%;
   flex-grow: 1;
 }
 </style>

@@ -3,6 +3,6 @@
 
 <template>
   <main>
-    <h2>BEES</h2>
+    <h1>BEES</h1>
   </main>
 </template>
