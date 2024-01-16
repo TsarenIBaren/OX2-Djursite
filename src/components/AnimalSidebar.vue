@@ -1,46 +1,46 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { Images } from '/src/assets/scripts/resourceApi.js'
+import { ref, onMounted } from 'vue';
+import { Image, Images } from '/src/assets/scripts/resourceApi.js';
 
-const props = defineProps(['mobile'])
-const animals = ref([])
+const props = defineProps(['mobile']);
+const animals = ref([]);
 
 onMounted(async () => {
-  animals.value = await Images(66)
+  animals.value = await Images(['TMF','animal','icon']);
 
   document.addEventListener('mousemove', (e) => {
-    const elem = document.elementFromPoint(e.clientX, e.clientY)
-    let labelElem
+    const elem = document.elementFromPoint(e.clientX, e.clientY);
+    let labelElem;
 
     if (elem?.classList?.contains('sb-label')) {
-      labelElem = elem
-      labelElem?.classList.add('sb-label-active')
-    }
+      labelElem = elem;
+      labelElem?.classList.add('sb-label-active');
+    };
 
     if (elem?.parentElement?.classList?.contains('category')) {
       if (elem.tagName == 'IMG') {
-        labelElem = elem.parentElement.children[0].children[0]
-        labelElem?.classList.add('sb-label-active')
-      }
-    }
+        labelElem = elem.parentElement.children[0].children[0];
+        labelElem?.classList.add('sb-label-active');
+      };
+    };
 
     for (let elem of document.getElementsByClassName('sb-label-active')) {
       if (elem !== labelElem) {
-        elem.classList.remove('sb-label-active')
-        elem.style.width = ''
-      }
-    }
+        elem.classList.remove('sb-label-active');
+        elem.style.width = '';
+      };
+    };
 
     if (labelElem) {
-      const computedStyle = getComputedStyle(labelElem)
+      const computedStyle = getComputedStyle(labelElem);
       const labelElemWidth =
         labelElem.scrollWidth -
         parseFloat(computedStyle.paddingLeft) -
         parseFloat(computedStyle.paddingRight)
-      labelElem.style.width = `${labelElemWidth}px`
-    }
-  })
-})
+      labelElem.style.width = `${labelElemWidth}px`;
+    };
+  });
+});
 </script>
 
 <template>

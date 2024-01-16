@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 import AnimalSidebar from './components/AnimalSidebar.vue'
 import OutdoorActivites from './components/OutdoorActivites.vue'
-import { Images } from '/src/assets/scripts/resourceApi.js'
+import { Contents, Image, Images } from '/src/assets/scripts/resourceApi.js'
 
 const logo = ref(null)
 const bg = ref(null)
@@ -34,9 +34,11 @@ document.addEventListener('mousemove', (e) => {
 })
 
 onMounted(async () => {
-  bg.value = await Images(158)
-  logo.value = await Images(183)
+  Contents(['TMF','animal','info']);
+  bg.value = await Images(['TMF','background'])
+  logo.value = await Images(['TMF','ox2','logo'])
   logo.value = logo.value[0][0]
+  Image(240);
 })
 </script>
 <template>
