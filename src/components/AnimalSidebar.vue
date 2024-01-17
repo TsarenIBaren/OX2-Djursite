@@ -86,6 +86,14 @@ onMounted(async () => {
   margin-left: 6em;
 }
 
+.compact {
+  font-size: small;
+}
+
+.compact :deep(*) {
+  font-size: inherit;
+}
+
 .category > img {
   height: 6em;
   width: 6em;
@@ -114,7 +122,6 @@ onMounted(async () => {
   background-color: white;
   padding: 0.5em;
   border-radius: 0.25em;
-  outline: 0.125em solid hsl(0, 0%, 95%);
   white-space: nowrap;
   overflow: hidden;
   width: 0px;

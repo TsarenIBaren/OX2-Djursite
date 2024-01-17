@@ -20,3 +20,13 @@ const props = defineProps(['page']);
 <template>
     <div id="page" v-html="pages[page]" />
 </template>
+
+<style scoped>
+#page :deep(img) {
+    height: auto;
+}
+
+#page :deep(h2) {
+    text-align: center;
+}
+</style>
