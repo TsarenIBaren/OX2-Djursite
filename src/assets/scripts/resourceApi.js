@@ -34,11 +34,7 @@ async function Contents(tags=[]) {
             return true;
         });
 
-        result = result.map((item) => [
-            item.content.rendered,
-            item.featured_media
-        ]);
-        console.log(result);
+        result = result.map((item) => [item.content.rendered, item.featured_media]);
         return result;
 
     } catch (error) {

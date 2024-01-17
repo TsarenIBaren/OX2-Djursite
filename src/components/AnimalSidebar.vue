@@ -51,9 +51,9 @@ onMounted(async () => {
       props.mobile ? 'display: flex; flex-wrap: wrap; flex-basis:100%;' : 'padding-bottom: 1.5em;'
     "
   >
-    <RouterLink
+    <div
       v-for="animal in animals"
-      :to="`/${animal[1].toLowerCase()}`"
+      @click="$emit('pageto', animal[1])"
       class="category"
       :class="props.mobile ? 'compact' : 'wide'"
     >
@@ -61,7 +61,7 @@ onMounted(async () => {
         <div class="sb-label">{{ animal[1] }}</div>
       </div>
       <img :src="animal[0]" />
-    </RouterLink>
+    </div>
   </div>
 </template>
 
@@ -96,6 +96,7 @@ onMounted(async () => {
 .category > img:hover {
   transform: scale(105%);
 }
+
 
 .category > div {
   position: absolute;

@@ -1,19 +1,25 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { RouterView } from 'vue-router'
-import AnimalSidebar from './components/AnimalSidebar.vue'
-import OutdoorActivites from './components/OutdoorActivites.vue'
-import { Contents, Image, Images } from '/src/assets/scripts/resourceApi.js'
+import { ref, onMounted } from 'vue';
+import { RouterView } from 'vue-router';
+import AnimalSidebar from './components/AnimalSidebar.vue';
+import AnimalPage from './components/AnimalPage.vue';
+import OutdoorActivites from './components/OutdoorActivites.vue';
+import { Image, Images } from '/src/assets/scripts/resourceApi.js';
 
-const logo = ref(null)
-const bg = ref(null)
+const currentPage = ref('');
+function PageTo(page) {
+  currentPage.value = page;
+};
 
-const mobileBreakpoint = 768
-const mobile = ref(window.innerWidth < mobileBreakpoint)
+const logo = ref(null);
+const bg = ref(null);
+
+const mobileBreakpoint = 768;
+const mobile = ref(window.innerWidth < mobileBreakpoint);
 
 window.addEventListener('resize', () => {
-  mobile.value = window.innerWidth < mobileBreakpoint
-})
+  mobile.value = window.innerWidth < mobileBreakpoint;
+});
 
 document.addEventListener('mousemove', (e) => {
   const background = document.getElementById('bg');
@@ -30,16 +36,14 @@ document.addEventListener('mousemove', (e) => {
     background.style.top = '';
     background.style.right = '';
     background.style.bottom = '';
-  }
-})
+  };
+});
 
 onMounted(async () => {
-  Contents(['TMF','animal','info']);
-  bg.value = await Images(['TMF','background'])
-  logo.value = await Images(['TMF','ox2','logo'])
-  logo.value = logo.value[0][0]
-  Image(240);
-})
+  bg.value = await Images(['TMF','background']);
+  logo.value = await Images(['TMF','ox2','logo']);
+  logo.value = logo.value[0][0];
+});
 </script>
 <template>
   <div class="cover" id="bg" :style="bg ? `background-image: url(${bg[0][0]});` : ''" />
@@ -47,13 +51,13 @@ onMounted(async () => {
   <div id="mainwrapper">
     <header>
       <nav>
-        <RouterLink to="/"><img :src="logo" height="50px" /></RouterLink>
+        <div @click="PageTo('')"><img id="logo" :src="logo" height="50px" /></div>
       </nav>
     </header>
     <div id="contentwrapper">
-        <AnimalSidebar :mobile="mobile" />
+        <AnimalSidebar :mobile="mobile" @pageto="(e) => {PageTo(e);}" />
         <div id="infobox" class="content box">
-          <RouterView />
+          <AnimalPage :page="currentPage" />
         </div>
     </div>
     <div class="content box">
@@ -111,12 +115,19 @@ nav {
   border: 0.25em solid hsl(0, 0%, 100%);
   position: relative;
   color: white;
-  text-align: center;
   overflow: hidden;
 }
 
 #infobox {
   flex-basis: 50%;
   flex-grow: 1;
+}
+
+#logo {
+  transition: transform 0.125s ease-in-out;
+}
+
+#logo:hover {
+  transform: scale(105%);
 }
 </style>
