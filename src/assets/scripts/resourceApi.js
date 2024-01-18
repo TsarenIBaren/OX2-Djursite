@@ -58,7 +58,7 @@ async function Image(id) {
 
 async function Images(tags=[]) {
     try {
-        const response = await fetch(`${wordpressPostUrl}/media`);
+        const response = await fetch(`${wordpressPostUrl}/media/?per_page=100`);
         const data = await response.json();
         let result;
 
@@ -76,7 +76,6 @@ async function Images(tags=[]) {
             image.source_url,
             image.title.rendered,
         ]);
-
         return result;
 
     } catch (error) {

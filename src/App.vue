@@ -1,15 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { RouterView } from 'vue-router';
-import AnimalSidebar from './components/AnimalSidebar.vue';
-import AnimalPage from './components/AnimalPage.vue';
-import OutdoorActivites from './components/OutdoorActivites.vue';
+import { RouterView, RouterLink } from 'vue-router';
 import { Image, Images } from '/src/assets/scripts/resourceApi.js';
-
-const currentPage = ref('');
-function PageTo(page) {
-  currentPage.value = page;
-};
 
 const logo = ref(null);
 const bg = ref(null);
@@ -51,22 +43,19 @@ onMounted(async () => {
   <div id="mainwrapper">
     <header>
       <nav>
-        <div @click="PageTo('')"><img id="logo" :src="logo" height="50px" /></div>
+        <RouterLink class="nav-button" to="/"><img id="logo" :src="logo" height="50px" /></RouterLink>
+        <RouterLink class="nav-button" to="/">Home</RouterLink>
+        <RouterLink class="nav-button" to="/activities">Activities</RouterLink>
+        <RouterLink class="nav-button" to="/live">Live</RouterLink>
       </nav>
     </header>
     <div id="contentwrapper">
-        <AnimalSidebar :mobile="mobile" @pageto="(e) => {PageTo(e);}" />
-        <div id="infobox" class="content box">
-          <AnimalPage :page="currentPage" />
-        </div>
-    </div>
-    <div class="content box">
-      <OutdoorActivites />
+      <RouterView />
     </div>
   </div>
 </template>
 
-<style scoped>
+<style>
 .cover {
   position: fixed;
   top: 0;
@@ -87,9 +76,25 @@ onMounted(async () => {
 nav {
   padding: 0.5em;
   display: flex;
+  flex-wrap: wrap;
   border-radius: 0.5em;
   border-bottom: 0.25em solid white;
   margin-bottom: 1.5em;
+  align-items: center;
+}
+
+.nav-button {
+  margin: 0;
+  margin-right: 1em;
+  font-size: 2em;
+  color: white;
+  text-decoration: none;
+  transition: transform 0.125s ease-in-out;
+}
+
+.nav-button:hover {
+  text-decoration: underline;
+  transform: scale(105%);
 }
 
 .box {
@@ -116,11 +121,6 @@ nav {
   position: relative;
   color: white;
   overflow: hidden;
-}
-
-#infobox {
-  flex-basis: 50%;
-  flex-grow: 1;
 }
 
 #logo {

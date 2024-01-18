@@ -6,7 +6,7 @@ const props = defineProps(['mobile']);
 const animals = ref([]);
 
 onMounted(async () => {
-  animals.value = await Images(['TMF','animal','icon']);
+  animals.value = await Images(['TMF','animal']);
 
   document.addEventListener('mousemove', (e) => {
     const elem = document.elementFromPoint(e.clientX, e.clientY);
