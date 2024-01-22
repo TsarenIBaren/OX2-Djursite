@@ -8,6 +8,11 @@ const bg = ref(null);
 
 const mobileBreakpoint = 768;
 const mobile = ref(window.innerWidth < mobileBreakpoint);
+let touch = false;
+
+if ('ontouchstart' in window || navigator.maxTouchPoints) {
+  touch = true;
+};
 
 window.addEventListener('resize', () => {
   mobile.value = window.innerWidth < mobileBreakpoint;
@@ -17,7 +22,7 @@ document.addEventListener('mousemove', (e) => {
   const background = document.getElementById('bg');
   const amount = 100;
 
-  if (!mobile.value) {
+  if (!touch) {
     background.style.left = `${-amount-(e.clientX/window.innerWidth*amount)}px`;
     background.style.top = `${-amount-(e.clientY/window.innerHeight*amount)}px`;
     background.style.right = `${-amount+(e.clientX/window.innerWidth*amount)}px`;
@@ -32,13 +37,14 @@ document.addEventListener('mousemove', (e) => {
 });
 
 onMounted(async () => {
-  bg.value = await Images(['TMF','background']);
-  logo.value = await Images(['TMF','ox2','logo']);
-  logo.value = logo.value[0][0];
+  bg.value = await Image(242);
+  logo.value = await Image(185);
+  logo.value = logo.value[0];
 });
+
 </script>
 <template>
-  <div class="cover" id="bg" :style="bg ? `background-image: url(${bg[0][0]});` : ''" />
+  <div class="cover" id="bg" :style="bg ? `background-image: url(${bg[0]});` : ''" />
   <div class="cover" id="fg" />
   <div id="mainwrapper">
     <header>

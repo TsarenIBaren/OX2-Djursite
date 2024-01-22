@@ -1,87 +1,78 @@
 const wordpressPostUrl = 'https://www.datanom.ax/~kjell/ox2/wp-json/wp/v2';
+let storedTags = Tags();
 
 async function Tags() {
-    try {
-        const response = await fetch(`${wordpressPostUrl}/tags`);
-        const data = await response.json();
-        const result = {};
+    const response = await fetch(`${wordpressPostUrl}/tags?per_page=100`);
+    const data = await response.json();
+    const result = {};
 
-        for (let tag of data) {
-            result[tag.name] = tag.id;
+    for (let tag of data) {
+        result[tag.name] = tag.id;
+    };
+
+    return result;
+}
+
+async function GetifyTags(tags) {
+    let postTags = storedTags;
+    if (!storedTags.length) {
+        postTags = await Tags();
+    };
+
+    let searchTags = '';
+    tags.forEach((v, i) => {
+        if (postTags[v]) {
+            searchTags += `${postTags[v]},`;
+
+        } else {
+            console.log(`Skipping tag ${v}`);
         };
 
-        return result;
-
-    } catch (error) {
-        console.error('Error fetching WordPress data:', error);
-    };
+        if (i == tags.length - 1) {
+            searchTags.slice(0,-1);
+        };
+    });
+    return searchTags;
 }
 
 async function Contents(tags=[]) {
-    try {
-        const response = await fetch(`${wordpressPostUrl}/posts`);
-        const data = await response.json();
-        const postTags = await Tags();
-        let result;
+    const response = await fetch(`${wordpressPostUrl}/posts?per_page=100&tags=${await GetifyTags(tags)}`);
+    const data = await response.json();
+    const result = data.map((item) => {
+        return {
+            content: item.content.rendered,
+            featured: item.featured_media
+        };
+    });
 
-        result = data.filter((post) => {
-            for (let tag of tags) {
-                if (!post.tags.includes(postTags[tag])) {
-                    return false;
-                };
-            };
-
-            return true;
-        });
-
-        result = result.map((item) => [item.content.rendered, item.featured_media]);
-        return result;
-
-    } catch (error) {
-        console.error('Error fetching WordPress data:', error);
-        return;
-    };
-}
+    return result;
+};
 
 async function Image(id) {
-    try {
+    if (id) {
         const response = await fetch(`${wordpressPostUrl}/media/${id}`);
         const data = await response.json();
-
+    
         return [data.source_url, data.title.rendered];
-
-    } catch (error) {
-        console.error('Error fetching WordPress data:', error);
-        return;
     };
+
+    return;
 };
 
 async function Images(tags=[]) {
-    try {
-        const response = await fetch(`${wordpressPostUrl}/media/?per_page=100`);
-        const data = await response.json();
-        let result;
+    const response = await fetch(`${wordpressPostUrl}/posts?per_page=100&tags=${await GetifyTags(tags)}`);
+    const data = await response.json();
+    
+    let result = [];
 
-        result = data.filter((media) => {
-            for (let tag of tags) {
-                if (!media.alt_text.split(' ').includes(tag)) {
-                    return false;
-                };
-            };
-
-            return true;
-        });
-
-        result = result.map(image => [
-            image.source_url,
-            image.title.rendered,
-        ]);
-        return result;
-
-    } catch (error) {
-        console.error('Error fetching WordPress data:', error);
-        return;
+    for (let post of data) {
+        if (post.featured_media !== 0) {
+            const image = await Image(post.featured_media);
+            result.push(image);
+        };
     };
+
+    return result;
 };
 
 export {Contents, Image, Images};

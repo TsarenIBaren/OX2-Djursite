@@ -5,13 +5,18 @@ import { Contents, Image } from '/src/assets/scripts/resourceApi.js';
 const pages = ref({});
 
 onMounted(async () => {
-    const homepage = await(Contents(['TMF', 'info', 'homepage']));
-    pages.value[''] = homepage[0][0];
+    const homepage = await(Contents(['TMFHomeInfo']));
+    pages.value[''] = homepage[0].content;
 
-    const contents = await Contents(['TMF', 'animal', 'info']);
-    for (let content of contents) {
-        let contentImage = await Image(content[1]);
-        pages.value[contentImage[1]] = content[0];
+    const posts = await Contents(['TMFAnimalInfo']);
+    for (let post of posts) {
+        let associatedImage = await Image(post.featured);
+        if (associatedImage) {
+            pages.value[associatedImage[1]] = post.content;
+
+        } else {
+            console.log(`Skipping ${associatedImage}`);
+        };
     };
 });
 
