@@ -19,9 +19,11 @@ window.addEventListener('resize', () => {
 <template>
   <AnimalSidebar :mobile="mobile" @pageto="(e) => {PageTo(e);}" />
   <div id="infobox" class="content box" :style="mobile ? 'flex-wrap:wrap;' : ''">
-    <AnimalPage :page="currentPage" />
-    <div>
-      <img src="https://www.natur.ax/wp-content/uploads/2021/08/mockelo-havsbad.jpg" width=100%>
+    <div id="maincontent">
+      <AnimalPage :page="currentPage" />
+    </div>
+    <div id="sidecontent">
+      <img src="https://www.natur.ax/wp-content/uploads/2021/08/mockelo-havsbad.jpg" width=250em>
       <p>Very cool image caption and useful information.</p>
       <p>Did you know that over any% of the population missed this critical information on the side here. Are people really that lazy? Yes, probably.</p>
     </div>
