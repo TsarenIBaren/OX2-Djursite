@@ -3,10 +3,9 @@
 
 * {
   font-family: 'Comic Neue', cursive;
-  font-size: large;
 }
 
 h1, h2, h3, h4, h5 {
   font-family: 'Mochiy Pop P One', sans-serif;
-  font-size: larger;
+  margin: 0;
 }

@@ -105,8 +105,7 @@ nav {
 
 .box {
   border-radius: 0.5em;
-  padding: 0.5em;
-  margin: 0.5em;
+  padding: 1em;
 }
 
 #mainwrapper {
