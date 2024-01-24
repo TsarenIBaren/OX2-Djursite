@@ -53,6 +53,14 @@ onMounted(async () => {
         <RouterLink class="nav-button" to="/">Home</RouterLink>
         <RouterLink class="nav-button" to="/activities">Activities</RouterLink>
         <RouterLink class="nav-button" to="/live">Live</RouterLink>
+        <div>
+          <button @click="changeLanguage('eng')">
+            <img src="" alt="English Flag" class="flag-icon">
+          </button>
+          <button @click="changeLanguage('swe')">
+            <img src="" alt="Swedish Flag" class="flag-icon">
+          </button>
+        </div>
       </nav>
     </header>
     <div id="contentwrapper">
@@ -62,6 +70,10 @@ onMounted(async () => {
 </template>
 
 <style>
+.flag-icon {
+  width: 1em; 
+  height: auto;
+}
 .cover {
   position: fixed;
   top: 0;
