@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { RouterView, RouterLink } from 'vue-router';
 import { Image, Images } from '/src/assets/scripts/resourceApi.js';
+import * as foreground from '/src/assets/scripts/foreground.js';
 
 const logo = ref(null);
 const bg = ref(null);
@@ -40,11 +41,15 @@ onMounted(async () => {
   bg.value = await Image(242);
   logo.value = await Image(185);
   logo.value = logo.value[0];
+  foreground.Play();
+
 });
 
 </script>
 <template>
-  <div class="cover" id="bg" :style="bg ? `background-image: url(${bg[0]});` : ''" />
+  <div class="cover" id="bg" :style="bg ? `background-image: url(${bg[0]});` : ''">
+    <canvas id="fg-canvas" />
+  </div>
   <div class="cover" id="fg" />
   <div id="mainwrapper">
     <header>
