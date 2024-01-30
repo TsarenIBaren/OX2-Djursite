@@ -3,9 +3,12 @@ import { ref, onMounted } from 'vue';
 import { RouterView, RouterLink } from 'vue-router';
 import { Image, Images } from '/src/assets/scripts/resourceApi.js';
 import * as foreground from '/src/assets/scripts/foreground.js';
+import * as fg2 from '/src/assets/scripts/fg2.js';
 
 const logo = ref(null);
 const bg = ref(null);
+const en = ref(null);
+const sv = ref(null);
 
 const mobileBreakpoint = 768;
 const mobile = ref(window.innerWidth < mobileBreakpoint);
@@ -24,10 +27,10 @@ document.addEventListener('mousemove', (e) => {
   const amount = 100;
 
   if (!touch) {
-    background.style.left = `${-amount-(e.clientX/window.innerWidth*amount)}px`;
-    background.style.top = `${-amount-(e.clientY/window.innerHeight*amount)}px`;
-    background.style.right = `${-amount+(e.clientX/window.innerWidth*amount)}px`;
-    background.style.bottom = `${-amount+(e.clientY/window.innerHeight*amount)}px`;
+    background.style.left = `${-amount-(e.clientX/window.innerWidth*amount-amount/2)}px`;
+    background.style.top = `${-amount-(e.clientY/window.innerHeight*amount-amount/2)}px`;
+    background.style.right = `${-amount+(e.clientX/window.innerWidth*amount-amount/2)}px`;
+    background.style.bottom = `${-amount+(e.clientY/window.innerHeight*amount-amount/2)}px`;
 
   } else {
     background.style.left = '';
@@ -41,9 +44,19 @@ onMounted(async () => {
   bg.value = await Image(242);
   logo.value = await Image(185);
   logo.value = logo.value[0];
-  foreground.Play();
 
+  en.value = await Image(589);
+  en.value = en.value[0];
+  sv.value = await Image(590);
+  sv.value = sv.value[0];
+
+  foreground.Play();
 });
+
+function SwitchLang(language) {
+  document.cookie = `lang=${language}`;
+  location.reload();
+};
 
 </script>
 <template>
@@ -53,19 +66,15 @@ onMounted(async () => {
   <div class="cover" id="fg" />
   <div id="mainwrapper">
     <header>
-      <nav>
+      <nav :class="mobile ? 'nav-mobile' : ''">
         <RouterLink class="nav-button" to="/"><img id="logo" :src="logo" height="50px" /></RouterLink>
         <RouterLink class="nav-button" to="/">Home</RouterLink>
         <RouterLink class="nav-button" to="/activities">Activities</RouterLink>
         <RouterLink class="nav-button" to="/live">Live</RouterLink>
         <div>
-          <button @click="changeLanguage('eng')">
-            <img src="" alt="English Flag" class="flag-icon">
-          </button>
-          <button @click="changeLanguage('swe')">
-            <img src="" alt="Swedish Flag" class="flag-icon">
-          </button>
-        </div>
+          <img @click="SwitchLang('en')" :src="en" alt="en" class="flag-icon">
+          <img @click="SwitchLang('sv')" :src="sv" alt="sv" class="flag-icon">
+        </div>  
       </nav>
     </header>
     <div id="contentwrapper">
@@ -75,10 +84,6 @@ onMounted(async () => {
 </template>
 
 <style>
-.flag-icon {
-  width: 1em; 
-  height: auto;
-}
 .cover {
   position: fixed;
   top: 0;
@@ -106,17 +111,36 @@ nav {
   align-items: center;
 }
 
+nav > * {
+  margin-right: 1em;
+}
+
+.nav-mobile > * {
+  flex-basis: 100%;
+}
+
 .nav-button {
   margin: 0;
-  margin-right: 1em;
   font-size: 2em;
   color: white;
   text-decoration: none;
+  margin-right: 1em;
   transition: transform 0.125s ease-in-out;
 }
 
 .nav-button:hover {
   text-decoration: underline;
+  transform: scale(105%);
+}
+
+.flag-icon {
+  height: 3em;
+  margin-right: 0.5em;
+  width: auto;
+  transition: transform 0.125s ease-in-out;
+}
+
+.flag-icon:hover {
   transform: scale(105%);
 }
 

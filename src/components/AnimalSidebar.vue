@@ -6,7 +6,7 @@ const props = defineProps(['mobile']);
 const animals = ref([]);
 
 onMounted(async () => {
-  animals.value = await Images(['TMFAnimalPic']);
+  animals.value = await Images(['tmfanimalpic']);
 
   document.addEventListener('mousemove', (e) => {
     const elem = document.elementFromPoint(e.clientX, e.clientY);
@@ -41,6 +41,13 @@ onMounted(async () => {
     };
   });
 });
+
+function TextFromHTMLString(htmlString) {
+  let elem = document.createElement('div');
+  elem.innerHTML = htmlString;
+
+  return elem.textContent;
+};
 </script>
 
 <template>
@@ -53,12 +60,12 @@ onMounted(async () => {
   >
     <div
       v-for="animal in animals"
-      @click="$emit('pageto', animal[1])"
+      @click="$emit('pageto', animal[2])"
       class="category"
       :class="props.mobile ? 'compact' : 'wide'"
     >
       <div v-if="!props.mobile">
-        <div class="sb-label">{{ animal[1] }}</div>
+        <div class="sb-label">{{ TextFromHTMLString(animal[1]) }}</div>
       </div>
       <img :src="animal[0]" />
     </div>

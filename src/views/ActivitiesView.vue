@@ -5,7 +5,7 @@ import { Contents, Image } from '/src/assets/scripts/resourceApi.js';
 const page = ref(null);
 
 onMounted(async () => {
-    const data = await(Contents(['TMFActivitiesPage']));
+    const data = await(Contents(['tmfactivitiespage']));
     page.value = data[0].content;
 });
 </script>

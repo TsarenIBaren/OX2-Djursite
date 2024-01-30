@@ -2,13 +2,14 @@
 import { ref, onMounted } from 'vue';
 import { Contents, Image } from '/src/assets/scripts/resourceApi.js';
 
+const props = defineProps(['page']);
 const pages = ref({});
 
 onMounted(async () => {
-    const homepage = await(Contents(['TMFHomeInfo']));
+    const homepage = await(Contents(['tmfhomeinfo']));
     pages.value[''] = homepage[0].content;
 
-    const posts = await Contents(['TMFAnimalInfo']);
+    const posts = await Contents(['tmfanimalinfo']);
     for (let post of posts) {
         let associatedImage = await Image(post.featured);
         if (associatedImage) {
@@ -19,8 +20,6 @@ onMounted(async () => {
         };
     };
 });
-
-const props = defineProps(['page']);
 </script>
 <template>
     <div id="page" v-html="pages[page]" />
