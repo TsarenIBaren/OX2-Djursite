@@ -14,6 +14,10 @@ const mobile = ref(window.innerWidth < mobileBreakpoint);
 window.addEventListener('resize', () => {
   mobile.value = window.innerWidth < mobileBreakpoint;
 });
+
+onMounted(() => {
+  currentPage.value = '';
+});
 </script>
 
 <template>

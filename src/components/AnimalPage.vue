@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { Contents, Image } from '/src/assets/scripts/resourceApi.js';
+import { Contents, AsyncImage } from '/src/assets/scripts/resourceApi.js';
 
 const props = defineProps(['page']);
 const pages = ref({});
@@ -11,13 +11,14 @@ onMounted(async () => {
 
     const posts = await Contents(['tmfanimalinfo']);
     for (let post of posts) {
-        let associatedImage = await Image(post.featured);
-        if (associatedImage) {
-            pages.value[associatedImage[1]] = post.content;
+        AsyncImage((associatedImage => {
+            if (associatedImage) {
+                pages.value[associatedImage[1]] = post.content;
 
-        } else {
-            console.log(`Skipping ${associatedImage}`);
-        };
+            } else {
+                console.log(`Skipping ${associatedImage}`);
+            };
+        }), post.featured);
     };
 });
 </script>

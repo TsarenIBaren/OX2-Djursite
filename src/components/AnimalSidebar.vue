@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { Image, Images } from '/src/assets/scripts/resourceApi.js';
+import { Images } from '/src/assets/scripts/resourceApi.js';
 
 const props = defineProps(['mobile']);
 const animals = ref([]);

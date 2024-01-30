@@ -1,6 +1,6 @@
 const wordpressPostUrl = 'https://www.datanom.ax/~kjell/ox2/wp-json/wp/v2';
-const languages = ['sv', 'en'];
-let storedTags = Tags();
+const languages = ['sv', 'en', 'de', 'fi'];
+let storedTags;
 
 let cookies = {};
 let cookieChunks = document.cookie.split(';');
@@ -29,10 +29,11 @@ async function GetifyTags(tags) {
         lang = cookies['lang'];
     };
 
-    let postTags = storedTags;
-    if (!storedTags.length) {
-        postTags = await Tags();
+    if (!storedTags?.length) {
+        storedTags = await Tags();
     };
+
+    let postTags = storedTags;
 
     let searchTags = '';
     tags.forEach((v, i) => {
@@ -52,13 +53,17 @@ async function GetifyTags(tags) {
 
 async function Contents(tags=[]) {
     const response = await fetch(`${wordpressPostUrl}/posts?per_page=100&tags=${await GetifyTags(tags)}`);
-    const data = await response.json();
-    const result = data.map((item) => {
-        return {
-            content: item.content.rendered,
-            featured: item.featured_media
-        };
-    });
+    let result = null;
+
+    if (response.ok) {
+        const data = await response.json();
+        result = data.map((item) => {
+            return {
+                content: item.content.rendered,
+                featured: item.featured_media
+            };
+        });
+    };
 
     return result;
 };
@@ -90,4 +95,17 @@ async function Images(tags=[]) {
     return result;
 };
 
-export {Contents, Image, Images};
+function AsyncImage(callback, id, trueTitle=null) {
+    if (id) {
+        fetch(`${wordpressPostUrl}/media/${id}`)
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            callback([data.source_url, trueTitle ? trueTitle : data.title.rendered, data.title.rendered]);
+        });
+
+    };
+}
+
+export {Contents, Images, AsyncImage};

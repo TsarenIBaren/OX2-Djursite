@@ -1,14 +1,17 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { RouterView, RouterLink } from 'vue-router';
-import { Image, Images } from '/src/assets/scripts/resourceApi.js';
+import { Images, AsyncImage } from '/src/assets/scripts/resourceApi.js';
 import * as foreground from '/src/assets/scripts/foreground.js';
 import * as fg2 from '/src/assets/scripts/fg2.js';
 
 const logo = ref(null);
 const bg = ref(null);
+
 const en = ref(null);
 const sv = ref(null);
+const de = ref(null);
+const fi = ref(null);
 
 const mobileBreakpoint = 768;
 const mobile = ref(window.innerWidth < mobileBreakpoint);
@@ -40,16 +43,37 @@ document.addEventListener('mousemove', (e) => {
   };
 });
 
+//Fetch background
+AsyncImage((data) => {
+  bg.value = data[0];
+}, 242);
+
+//Fetch logo
+AsyncImage((data) => {
+  logo.value = data[0];
+}, 185);
+
+//Fetch en icon
+AsyncImage((data) => {
+  en.value = data[0];
+}, 632);
+
+//Fetch sv icon
+AsyncImage((data) => {
+  sv.value = data[0];
+}, 647);
+
+//Fetch de icon
+AsyncImage((data) => {
+  de.value = data[0];
+}, 643);
+
+//Fetch fi icon
+AsyncImage((data) => {
+  fi.value = data[0];
+}, 651);
+
 onMounted(async () => {
-  bg.value = await Image(242);
-  logo.value = await Image(185);
-  logo.value = logo.value[0];
-
-  en.value = await Image(589);
-  en.value = en.value[0];
-  sv.value = await Image(590);
-  sv.value = sv.value[0];
-
   foreground.Play();
 });
 
@@ -60,20 +84,22 @@ function SwitchLang(language) {
 
 </script>
 <template>
-  <div class="cover" id="bg" :style="bg ? `background-image: url(${bg[0]});` : ''">
+  <div class="cover" id="bg" :style="bg ? `background-image: url(${bg});` : ''">
     <canvas id="fg-canvas" />
   </div>
   <div class="cover" id="fg" />
   <div id="mainwrapper">
     <header>
       <nav :class="mobile ? 'nav-mobile' : ''">
-        <RouterLink class="nav-button" to="/"><img id="logo" :src="logo" height="50px" /></RouterLink>
+        <RouterLink to="/"><img id="logo" :src="logo" height="50px" /></RouterLink>
         <RouterLink class="nav-button" to="/">Home</RouterLink>
         <RouterLink class="nav-button" to="/activities">Activities</RouterLink>
         <RouterLink class="nav-button" to="/live">Live</RouterLink>
         <div>
-          <img @click="SwitchLang('en')" :src="en" alt="en" class="flag-icon">
-          <img @click="SwitchLang('sv')" :src="sv" alt="sv" class="flag-icon">
+          <img @click="SwitchLang('en')" :src="en" alt="en" title="English" class="flag-icon">
+          <img @click="SwitchLang('sv')" :src="sv" alt="sv" title="Svenska" class="flag-icon">
+          <img @click="SwitchLang('de')" :src="de" alt="de" title="Deutch" class="flag-icon">
+          <img @click="SwitchLang('fi')" :src="fi" alt="fi" title="Suomi" class="flag-icon">
         </div>  
       </nav>
     </header>
@@ -101,6 +127,14 @@ function SwitchLang(language) {
   background-color: hsla(0, 0%, 50%, 0.2);
 }
 
+#loading-cover {
+  top: 50%;
+  left: 50%;
+  width: fit-content;
+  height: fit-content;
+  transform: translate(-50%, -50%);
+}
+
 nav {
   padding: 0.5em;
   display: flex;
@@ -117,6 +151,20 @@ nav > * {
 
 .nav-mobile > * {
   flex-basis: 100%;
+  margin: 0;
+  margin-top: 0.125em;
+  margin-bottom: 0.125em;
+  text-align: center;
+}
+
+.nav-mobile > .nav-button {
+  background-color: hsla(0, 0%, 50%, 0.5);
+  border: 0.125em solid hsl(0, 0%, 100%);
+  border-radius: 0.25em;
+  text-align: center;
+  margin: 0;
+  margin-top: 0.125em;
+  margin-bottom: 0.125em;
 }
 
 .nav-button {
@@ -124,8 +172,8 @@ nav > * {
   font-size: 2em;
   color: white;
   text-decoration: none;
-  margin-right: 1em;
   transition: transform 0.125s ease-in-out;
+  margin-right: 1em;
 }
 
 .nav-button:hover {

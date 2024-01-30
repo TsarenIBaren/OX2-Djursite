@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { Contents, Image } from '/src/assets/scripts/resourceApi.js';
+import { Contents } from '/src/assets/scripts/resourceApi.js';
 
 const page = ref(null);
 
