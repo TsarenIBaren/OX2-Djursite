@@ -24,6 +24,11 @@ if ('ontouchstart' in window || navigator.maxTouchPoints) {
   touch = true;
 };
 
+if (!cookies['lang']) {
+  document.cookie = 'lang=sv';
+  console.log('Defaulted to swedish');
+};
+
 window.addEventListener('resize', () => {
   mobile.value = window.innerWidth < mobileBreakpoint;
 });
