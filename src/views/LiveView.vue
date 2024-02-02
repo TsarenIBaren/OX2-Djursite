@@ -2,7 +2,7 @@
 </script>
 
 <template>
-<div class="content box" id="temp">
+<div class="content" id="temp">
     <iframe src="https://www.youtube.com/embed/XhV3Mhgi6Ck" allowfullscreen></iframe>
     <iframe src="https://www.youtube.com/embed/XhV3Mhgi6Ck" allowfullscreen></iframe>
     <iframe src="https://www.youtube.com/embed/XhV3Mhgi6Ck" allowfullscreen></iframe>

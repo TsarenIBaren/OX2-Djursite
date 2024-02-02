@@ -16,17 +16,16 @@ const sv = ref(null);
 const de = ref(null);
 const fi = ref(null);
 
-const mobileBreakpoint = 768;
+const mobileBreakpoint = 1024;
 const mobile = ref(window.innerWidth < mobileBreakpoint);
 let touch = false;
-
 if ('ontouchstart' in window || navigator.maxTouchPoints) {
   touch = true;
 };
 
 if (!cookies['lang']) {
-  document.cookie = 'lang=sv';
-  console.log('Defaulted to swedish');
+  document.cookie = 'lang=en';
+  location.reload();
 };
 
 window.addEventListener('resize', () => {
@@ -82,7 +81,9 @@ AsyncImage((data) => {
 }, 651);
 
 onMounted(async () => {
-  foreground.Play();
+  //foreground.Play();
+  fg2.Play();
+
   setInterval(() => {
     isLoading.value = loading;
   });
@@ -102,10 +103,10 @@ function SwitchLang(language) {
   <div id="mainwrapper" :style="isLoading ? 'display:none;' : ''">
     <header>
       <nav :class="mobile ? 'nav-mobile' : ''">
-        <RouterLink to="/"><img id="logo" :src="logo" height="50px" /></RouterLink>
-        <RouterLink class="nav-button" to="/">{{translations.data['homebtn'][cookies['lang']]}}</RouterLink>
-        <RouterLink class="nav-button" to="/activities">{{translations.data['activitiesbtn'][cookies['lang']]}}</RouterLink>
-        <RouterLink class="nav-button" to="/live">{{translations.data['livebtn'][cookies['lang']]}}</RouterLink>
+        <RouterLink to="/" onclick="location.reload();"><img id="logo" :src="logo" height="50px" /></RouterLink>
+        <div class="nav-btnwrap"><RouterLink class="nav-button" to="/">{{translations.data['homebtn'][cookies['lang']]}}</RouterLink></div>
+        <div class="nav-btnwrap"><RouterLink class="nav-button" to="/activities">{{translations.data['activitiesbtn'][cookies['lang']]}}</RouterLink></div>
+        <div class="nav-btnwrap"><RouterLink class="nav-button" to="/live">{{translations.data['livebtn'][cookies['lang']]}}</RouterLink></div>
         <div id="lang-picker">
           <img @click="SwitchLang('en')" :src="en" alt="en" title="English" class="flag-icon">
           <img @click="SwitchLang('sv')" :src="sv" alt="sv" title="Svenska" class="flag-icon">
@@ -116,7 +117,9 @@ function SwitchLang(language) {
     </header>
     <RouterView />
   </div>
-  <div v-if="isLoading" class="cover" id="loading-cover"><img height=100em src="/src/assets/Anisheep.gif"></div>
+  <div v-if="isLoading">
+    <div class="cover" id="loading-cover"><img height=100em src="/src/assets/Anisheep.gif"></div>
+  </div>
 </template>
 
 <style>
@@ -153,10 +156,7 @@ nav {
   border-bottom: 0.25em solid white;
   margin-bottom: 1.5em;
   align-items: center;
-}
-
-nav > * {
-  margin-right: 1em;
+  justify-content: center;
 }
 
 .nav-mobile > * {
@@ -167,23 +167,16 @@ nav > * {
   text-align: center;
 }
 
-.nav-mobile > .nav-button {
-  background-color: hsla(0, 0%, 50%, 0.5);
-  border: 0.125em solid hsl(0, 0%, 100%);
-  border-radius: 0.25em;
-  text-align: center;
-  margin: 0;
-  margin-top: 0.125em;
-  margin-bottom: 0.125em;
+.nav-btnwrap {
+  margin: 0.5em;
+  flex-basis: unset;
 }
 
 .nav-button {
-  margin: 0;
   font-size: 2em;
   color: white;
   text-decoration: none;
   transition: transform 0.125s ease-in-out;
-  margin-right: 1em;
 }
 
 .nav-button:hover {
@@ -192,13 +185,13 @@ nav > * {
 }
 
 #lang-picker {
-  margin: 0;
+  padding: 0.5em;
   margin-left: auto;
 }
 
 .flag-icon {
   height: 3em;
-  margin-right: 0.5em;
+  margin: 0.25em;
   width: auto;
   transition: transform 0.125s ease-in-out;
 }
@@ -231,6 +224,7 @@ nav > * {
 
 #logo {
   transition: transform 0.125s ease-in-out;
+  margin: 0.5em;
 }
 
 #logo:hover {

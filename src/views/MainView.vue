@@ -8,7 +8,7 @@ function PageTo(page) {
   currentPage.value = page;
 };
 
-const mobileBreakpoint = 768;
+const mobileBreakpoint = 1024;
 const mobile = ref(window.innerWidth < mobileBreakpoint);
 
 window.addEventListener('resize', () => {
@@ -27,7 +27,7 @@ onMounted(() => {
       <AnimalPage :page="currentPage" />
     </div>
     <div class="content box">
-      <img src="https://www.natur.ax/wp-content/uploads/2021/08/mockelo-havsbad.jpg" width=250em>
+      <img src="https://www.natur.ax/wp-content/uploads/2021/08/mockelo-havsbad.jpg" width=100%;>
       <p>Very cool image caption and useful information.</p>
       <p>Did you know that over any% of the population missed this critical information on the side here. Are people really that lazy? Yes, probably.</p>
     </div>
