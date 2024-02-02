@@ -1,6 +1,11 @@
+import translations from '/src/assets/translations.json';
+
 const wordpressPostUrl = 'https://www.datanom.ax/~kjell/ox2/wp-json/wp/v2';
-const languages = ['sv', 'en', 'de', 'fi'];
-let storedTags;
+let loading = true;
+let transaction = 0;
+let transactions = {};
+
+const languages = translations.languages;
 
 let cookies = {};
 let cookieChunks = document.cookie.split(';');
@@ -11,14 +16,38 @@ for (let cookiePiece of cookieChunks) {
     };
 };
 
+let storedTags = await Tags();
+
+function BeginFetch() {
+    loading = true;
+    const id = transaction;
+    transaction += 1;
+    transactions[id] = true;
+    return id;
+};
+
+function EndFetch(id) {
+    delete transactions[id];
+    if (Object.keys(transactions).length == 0) {
+        loading = false;
+    };
+};
+
 async function Tags() {
+    const transaction = BeginFetch();
+
     const response = await fetch(`${wordpressPostUrl}/tags?per_page=100`);
-    const data = await response.json();
     const result = {};
 
-    for (let tag of data) {
-        result[tag.slug] = tag.id;
+    if (response.ok) {
+        const data = await response.json();
+    
+        for (let tag of data) {
+            result[tag.slug] = tag.id;
+        };
     };
+
+    EndFetch(transaction);
 
     return result;
 };
@@ -29,19 +58,13 @@ async function GetifyTags(tags) {
         lang = cookies['lang'];
     };
 
-    if (!storedTags?.length) {
-        storedTags = await Tags();
-    };
-
-    let postTags = storedTags;
-
     let searchTags = '';
     tags.forEach((v, i) => {
-        if (postTags[`${v}-${lang}`]) {
-            searchTags += `${postTags[`${v}-${lang}`]},`;
+        if (storedTags[`${v}-${lang}`]) {
+            searchTags += `${storedTags[`${v}-${lang}`]},`;
 
         } else {
-            console.log(`Skipping tag ${v}-${lang}`);
+            console.log(`Skipping tag ${v}-${lang} \nReason: Tag doesn't exist`);
         };
 
         if (i == tags.length - 1) {
@@ -52,6 +75,8 @@ async function GetifyTags(tags) {
 };
 
 async function Contents(tags=[]) {
+    const transaction = BeginFetch();
+
     const response = await fetch(`${wordpressPostUrl}/posts?per_page=100&tags=${await GetifyTags(tags)}`);
     let result = null;
 
@@ -65,13 +90,20 @@ async function Contents(tags=[]) {
         });
     };
 
+    EndFetch(transaction);
+
     return result;
 };
 
 async function Image(id, trueTitle=null) {
+
     if (id) {
+        const transaction = BeginFetch();
+
         const response = await fetch(`${wordpressPostUrl}/media/${id}`);
         const data = await response.json();
+
+        EndFetch(transaction);
     
         return [data.source_url, trueTitle ? trueTitle : data.title.rendered, data.title.rendered];
     };
@@ -80,6 +112,8 @@ async function Image(id, trueTitle=null) {
 };
 
 async function Images(tags=[]) {
+    const transaction = BeginFetch();
+
     const response = await fetch(`${wordpressPostUrl}/posts?per_page=100&tags=${await GetifyTags(tags)}`);
     const data = await response.json();
     
@@ -91,6 +125,8 @@ async function Images(tags=[]) {
             result.push(image);
         };
     };
+    
+    EndFetch(transaction);
 
     return result;
 };
@@ -99,13 +135,21 @@ function AsyncImage(callback, id, trueTitle=null) {
     if (id) {
         fetch(`${wordpressPostUrl}/media/${id}`)
         .then(response => {
-            return response.json();
+            if (response.ok) {
+                return response.json();
+
+            } else {
+                return null;
+            }
         })
         .then(data => {
-            callback([data.source_url, trueTitle ? trueTitle : data.title.rendered, data.title.rendered]);
+            if (data) {
+                callback([data.source_url, trueTitle ? trueTitle : data.title.rendered, data.title.rendered]);
+            } else {
+                callback([null, null]);
+            };
         });
-
     };
 }
 
-export {Contents, Images, AsyncImage};
+export {loading, cookies, Contents, Images, AsyncImage};

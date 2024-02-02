@@ -53,7 +53,6 @@ function TextFromHTMLString(htmlString) {
 <template>
   <div
     id="sidebar"
-    class="box"
     :style="
       props.mobile ? 'display: flex; flex-wrap: wrap; flex-basis:100%;' : 'padding-bottom: 1.5em;'
     "
@@ -75,6 +74,7 @@ function TextFromHTMLString(htmlString) {
 <style scoped>
 #sidebar {
   justify-content: center;
+  margin: 0.5em;
 }
 
 .category {

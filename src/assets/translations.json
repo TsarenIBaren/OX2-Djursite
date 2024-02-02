@@ -1,0 +1,23 @@
+{
+    "languages": ["en","sv","de","fi"],
+    "data": {
+        "homebtn": {
+            "en": "Home",
+            "sv": "Hem",
+            "de": "Startseite",
+            "fi": "Koti"
+        },
+        "activitiesbtn": {
+            "en": "Activities",
+            "sv": "Aktiviteter",
+            "de": "Aktivitäten",
+            "fi": "Ulkoilu"
+        },
+        "livebtn": {
+            "en": "Live",
+            "sv": "Live",
+            "de": "Live",
+            "fi": "Live"
+        }
+    }
+}

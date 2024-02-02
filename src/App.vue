@@ -1,9 +1,12 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import translations from '/src/assets/translations.json';
+import { ref, onMounted, watch } from 'vue';
 import { RouterView, RouterLink } from 'vue-router';
-import { Images, AsyncImage } from '/src/assets/scripts/resourceApi.js';
+import { loading, cookies, Images, AsyncImage } from '/src/assets/scripts/resourceApi.js';
 import * as foreground from '/src/assets/scripts/foreground.js';
 import * as fg2 from '/src/assets/scripts/fg2.js';
+
+const isLoading = ref(loading);
 
 const logo = ref(null);
 const bg = ref(null);
@@ -75,6 +78,9 @@ AsyncImage((data) => {
 
 onMounted(async () => {
   foreground.Play();
+  setInterval(() => {
+    isLoading.value = loading;
+  });
 });
 
 function SwitchLang(language) {
@@ -88,14 +94,14 @@ function SwitchLang(language) {
     <canvas id="fg-canvas" />
   </div>
   <div class="cover" id="fg" />
-  <div id="mainwrapper">
+  <div id="mainwrapper" :style="isLoading ? 'display:none;' : ''">
     <header>
       <nav :class="mobile ? 'nav-mobile' : ''">
         <RouterLink to="/"><img id="logo" :src="logo" height="50px" /></RouterLink>
-        <RouterLink class="nav-button" to="/">Home</RouterLink>
-        <RouterLink class="nav-button" to="/activities">Activities</RouterLink>
-        <RouterLink class="nav-button" to="/live">Live</RouterLink>
-        <div>
+        <RouterLink class="nav-button" to="/">{{translations.data['homebtn'][cookies['lang']]}}</RouterLink>
+        <RouterLink class="nav-button" to="/activities">{{translations.data['activitiesbtn'][cookies['lang']]}}</RouterLink>
+        <RouterLink class="nav-button" to="/live">{{translations.data['livebtn'][cookies['lang']]}}</RouterLink>
+        <div id="lang-picker">
           <img @click="SwitchLang('en')" :src="en" alt="en" title="English" class="flag-icon">
           <img @click="SwitchLang('sv')" :src="sv" alt="sv" title="Svenska" class="flag-icon">
           <img @click="SwitchLang('de')" :src="de" alt="de" title="Deutch" class="flag-icon">
@@ -103,10 +109,9 @@ function SwitchLang(language) {
         </div>  
       </nav>
     </header>
-    <div id="contentwrapper">
-      <RouterView />
-    </div>
+    <RouterView />
   </div>
+  <div v-if="isLoading" class="cover" id="loading-cover"><img height=100em src="/src/assets/Anisheep.gif"></div>
 </template>
 
 <style>
@@ -181,6 +186,11 @@ nav > * {
   transform: scale(105%);
 }
 
+#lang-picker {
+  margin: 0;
+  margin-left: auto;
+}
+
 .flag-icon {
   height: 3em;
   margin-right: 0.5em;
@@ -195,6 +205,10 @@ nav > * {
 .box {
   border-radius: 0.5em;
   padding: 1em;
+  margin: 0.25em;
+  font-size: x-large;
+  background-color: hsla(0, 0%, 50%, 0.5);
+  border: 0.175em solid hsl(0, 0%, 100%);
 }
 
 #mainwrapper {
@@ -204,14 +218,7 @@ nav > * {
   max-width: 1280px;
 }
 
-#contentwrapper {
-  display: flex;
-  flex-wrap: wrap;
-}
-
 .content {
-  background-color: hsla(0, 0%, 50%, 0.5);
-  border: 0.25em solid hsl(0, 0%, 100%);
   position: relative;
   color: white;
   overflow: hidden;
