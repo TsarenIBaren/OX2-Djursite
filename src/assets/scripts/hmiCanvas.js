@@ -65,7 +65,7 @@ function DrawImage(imageDir, position, scale=[1,1], rotation=0, anchor=null) {
                 }
                 images[imageDir].object.src = imageDir;
                 images[imageDir].object.onload = () => {
-                    console.log(`Loaded image: ${imageDir.split('/').pop()} (${Date.now() - images[imageDir].beganLoad}ms)`);
+                    //console.log(`Loaded image: ${imageDir.split('/').pop()} (${Date.now() - images[imageDir].beganLoad}ms)`);
                     images[imageDir].loaded = true;
                     images[imageDir].size = [images[imageDir].object.width, images[imageDir].object.height];
                 };

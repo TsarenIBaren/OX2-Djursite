@@ -1,6 +1,7 @@
 import translations from '/src/assets/translations.json';
 
 const wordpressPostUrl = 'https://www.datanom.ax/~kjell/ox2/wp-json/wp/v2';
+let loadingMeta = true;
 let loading = true;
 let transaction = 0;
 let transactions = {};
@@ -16,7 +17,14 @@ for (let cookiePiece of cookieChunks) {
     };
 };
 
-let storedTags = await Tags();
+let storedTags = {}
+
+async function LoadMeta() {
+    storedTags = await Tags();
+    loadingMeta = false;
+};
+
+LoadMeta();
 
 function BeginFetch() {
     loading = true;
@@ -152,4 +160,4 @@ function AsyncImage(callback, id, trueTitle=null) {
     };
 }
 
-export {loading, cookies, Contents, Images, AsyncImage};
+export {loadingMeta, loading, cookies, Contents, Images, AsyncImage};

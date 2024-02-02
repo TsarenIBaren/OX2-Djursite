@@ -2,11 +2,11 @@
 import translations from '/src/assets/translations.json';
 import { ref, onMounted, watch } from 'vue';
 import { RouterView, RouterLink } from 'vue-router';
-import { loading, cookies, Images, AsyncImage } from '/src/assets/scripts/resourceApi.js';
-import * as foreground from '/src/assets/scripts/foreground.js';
+import { loadingMeta, loading, cookies, Images, AsyncImage } from '/src/assets/scripts/resourceApi.js';
 import * as fg2 from '/src/assets/scripts/fg2.js';
 
 const isLoading = ref(loading);
+const isLoadingMeta = ref(loadingMeta);
 
 const logo = ref(null);
 const bg = ref(null);
@@ -15,6 +15,9 @@ const en = ref(null);
 const sv = ref(null);
 const de = ref(null);
 const fi = ref(null);
+
+const time = ref('Day');
+const season = ref('Summer');
 
 const mobileBreakpoint = 1024;
 const mobile = ref(window.innerWidth < mobileBreakpoint);
@@ -33,59 +36,41 @@ window.addEventListener('resize', () => {
 });
 
 document.addEventListener('mousemove', (e) => {
-  const background = document.getElementById('bg');
-  const amount = 100;
+  MoveBackground(e);
 
-  if (!touch) {
-    background.style.left = `${-amount-(e.clientX/window.innerWidth*amount-amount/2)}px`;
-    background.style.top = `${-amount-(e.clientY/window.innerHeight*amount-amount/2)}px`;
-    background.style.right = `${-amount+(e.clientX/window.innerWidth*amount-amount/2)}px`;
-    background.style.bottom = `${-amount+(e.clientY/window.innerHeight*amount-amount/2)}px`;
-
-  } else {
-    background.style.left = '';
-    background.style.top = '';
-    background.style.right = '';
-    background.style.bottom = '';
-  };
+  sessionStorage.setItem('mouseX', e.clientX);
+  sessionStorage.setItem('mouseY', e.clientY);
 });
 
 //Fetch background
 AsyncImage((data) => {
   bg.value = data[0];
 }, 242);
-
 //Fetch logo
 AsyncImage((data) => {
   logo.value = data[0];
 }, 185);
-
 //Fetch en icon
 AsyncImage((data) => {
   en.value = data[0];
 }, 632);
-
 //Fetch sv icon
 AsyncImage((data) => {
   sv.value = data[0];
 }, 647);
-
 //Fetch de icon
 AsyncImage((data) => {
   de.value = data[0];
 }, 643);
-
 //Fetch fi icon
 AsyncImage((data) => {
   fi.value = data[0];
 }, 651);
 
 onMounted(async () => {
-  //foreground.Play();
-  fg2.Play();
-
   setInterval(() => {
     isLoading.value = loading;
+    isLoadingMeta.value = loadingMeta;
   });
 });
 
@@ -94,31 +79,122 @@ function SwitchLang(language) {
   location.reload();
 };
 
+function SwitchTime() {
+  if (time.value == 'Day') {
+    time.value = 'Night';
+
+  } else {
+    time.value = 'Day';
+  };
+
+  SwitchBackground();
+};
+
+function SwitchSeason() {
+  if (season.value == 'Summer') {
+    season.value = 'Winter';
+
+  } else {
+    season.value = 'Summer';
+  };
+
+  SwitchBackground();
+};
+
+function SwitchBackground() {
+  switch (`${season.value} ${time.value}`) {
+    case 'Summer Day':
+      AsyncImage((data) => {
+        bg.value = data[0];
+      }, 242);
+      break;
+    
+    case 'Summer Night':
+      AsyncImage((data) => {
+        bg.value = data[0];
+      }, 332);
+      break;
+
+    case 'Winter Day':
+      AsyncImage((data) => {
+        bg.value = data[0];
+      }, 841);
+      break;
+
+    case 'Winter Night':
+      AsyncImage((data) => {
+        bg.value = data[0];
+      }, 842);
+      break;
+  };
+  
+  MoveBackground();
+};
+
+function MoveBackground(e={}) {
+  const background = document.getElementById('bg');
+  const parallaxAmount = 100;
+  let yep = false;
+
+  if (e.detail == undefined) {
+    yep = true;
+    console.log(background);
+    e.clientX = parseFloat(sessionStorage.getItem('mouseX')) - 5000;
+    e.clientY = parseFloat(sessionStorage.getItem('mouseY')) - 5000;
+    background.onload = () => {
+      console.log('It loaded');
+    };
+  };
+
+  if (!touch) {
+    background.style.left = `${-parallaxAmount-(e.clientX/window.innerWidth*parallaxAmount-parallaxAmount/2)}px`;
+    background.style.top = `${-parallaxAmount-(e.clientY/window.innerHeight*parallaxAmount-parallaxAmount/2)}px`;
+    background.style.right = `${-parallaxAmount+(e.clientX/window.innerWidth*parallaxAmount-parallaxAmount/2)}px`;
+    background.style.bottom = `${-parallaxAmount+(e.clientY/window.innerHeight*parallaxAmount-parallaxAmount/2)}px`;
+
+  } else {
+    background.style.left = '';
+    background.style.top = '';
+    background.style.right = '';
+    background.style.bottom = '';
+  };
+
+  if (yep) {
+    console.log(background);
+  };
+};
+
 </script>
 <template>
   <div class="cover" id="bg" :style="bg ? `background-image: url(${bg});` : ''">
     <canvas id="fg-canvas" />
   </div>
   <div class="cover" id="fg" />
-  <div id="mainwrapper" :style="isLoading ? 'display:none;' : ''">
-    <header>
-      <nav :class="mobile ? 'nav-mobile' : ''">
-        <RouterLink to="/" onclick="location.reload();"><img id="logo" :src="logo" height="50px" /></RouterLink>
-        <div class="nav-btnwrap"><RouterLink class="nav-button" to="/">{{translations.data['homebtn'][cookies['lang']]}}</RouterLink></div>
-        <div class="nav-btnwrap"><RouterLink class="nav-button" to="/activities">{{translations.data['activitiesbtn'][cookies['lang']]}}</RouterLink></div>
-        <div class="nav-btnwrap"><RouterLink class="nav-button" to="/live">{{translations.data['livebtn'][cookies['lang']]}}</RouterLink></div>
-        <div id="lang-picker">
-          <img @click="SwitchLang('en')" :src="en" alt="en" title="English" class="flag-icon">
-          <img @click="SwitchLang('sv')" :src="sv" alt="sv" title="Svenska" class="flag-icon">
-          <img @click="SwitchLang('de')" :src="de" alt="de" title="Deutch" class="flag-icon">
-          <img @click="SwitchLang('fi')" :src="fi" alt="fi" title="Suomi" class="flag-icon">
-        </div>  
-      </nav>
-    </header>
-    <RouterView />
+  <div v-if="!isLoadingMeta">
+    <div id="mainwrapper" :style="isLoading ? 'display:none;' : ''">
+      <header>
+        <nav :class="mobile ? 'nav-mobile' : ''">
+          <RouterLink to="/" onclick="location.reload();"><img id="logo" :src="logo" height="50px" /></RouterLink>
+          <div class="nav-btnwrap"><RouterLink class="nav-button" to="/">{{translations.data['homebtn'][cookies['lang']]}}</RouterLink></div>
+          <div class="nav-btnwrap"><RouterLink class="nav-button" to="/activities">{{translations.data['activitiesbtn'][cookies['lang']]}}</RouterLink></div>
+          <div class="nav-btnwrap"><RouterLink class="nav-button" to="/live">{{translations.data['livebtn'][cookies['lang']]}}</RouterLink></div>
+          <div id="lang-picker">
+            <img @click="SwitchLang('en')" :src="en" alt="en" title="English" class="flag-icon">
+            <img @click="SwitchLang('sv')" :src="sv" alt="sv" title="Svenska" class="flag-icon">
+            <img @click="SwitchLang('de')" :src="de" alt="de" title="Deutch" class="flag-icon">
+            <img @click="SwitchLang('fi')" :src="fi" alt="fi" title="Suomi" class="flag-icon">
+          </div>  
+        </nav>
+      </header>
+      <RouterView />
+    </div>
+    <div v-if="isLoading">
+      <div class="cover" id="loading-cover"><img height=100em src="/src/assets/Anisheep.gif"></div>
+    </div>
   </div>
-  <div v-if="isLoading">
-    <div class="cover" id="loading-cover"><img height=100em src="/src/assets/Anisheep.gif"></div>
+  <div style="position:fixed; top:0; left:0;">
+    <button @click="SwitchTime()">Time: {{time}}</button>
+    <button @click="SwitchSeason()">Season: {{season}}</button>
   </div>
 </template>
 
