@@ -1,45 +1,55 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { Images } from '/src/assets/scripts/resourceApi.js';
+import { CustomData, Image } from '/src/assets/scripts/resourceApi.js';
 
 const props = defineProps(['mobile']);
 const animals = ref([]);
 
-onMounted(async () => {
-  animals.value = await Images(['tmfanimalpic']);
+CustomData((data) => {
+  for (let post of data) {
+    Image((image) => {
+      animals.value.push(
+        [
+          TextFromHTMLString(post.content.rendered),
+          image[0],
+          image[1]
+        ]
+      );
+    }, post.featured_media);
+  };
+}, ['tmfanimalpic']);
 
-  document.addEventListener('mousemove', (e) => {
-    const elem = document.elementFromPoint(e.clientX, e.clientY);
-    let labelElem;
+document.addEventListener('mousemove', (e) => {
+  const elem = document.elementFromPoint(e.clientX, e.clientY);
+  let labelElem;
 
-    if (elem?.classList?.contains('sb-label')) {
-      labelElem = elem;
+  if (elem?.classList?.contains('sb-label')) {
+    labelElem = elem;
+    labelElem?.classList.add('sb-label-active');
+  };
+
+  if (elem?.parentElement?.classList?.contains('category')) {
+    if (elem.tagName == 'IMG') {
+      labelElem = elem.parentElement.children[0].children[0];
       labelElem?.classList.add('sb-label-active');
     };
+  };
 
-    if (elem?.parentElement?.classList?.contains('category')) {
-      if (elem.tagName == 'IMG') {
-        labelElem = elem.parentElement.children[0].children[0];
-        labelElem?.classList.add('sb-label-active');
-      };
+  for (let elem of document.getElementsByClassName('sb-label-active')) {
+    if (elem !== labelElem) {
+      elem.classList.remove('sb-label-active');
+      elem.style.width = '';
     };
+  };
 
-    for (let elem of document.getElementsByClassName('sb-label-active')) {
-      if (elem !== labelElem) {
-        elem.classList.remove('sb-label-active');
-        elem.style.width = '';
-      };
-    };
-
-    if (labelElem) {
-      const computedStyle = getComputedStyle(labelElem);
-      const labelElemWidth =
-        labelElem.scrollWidth -
-        parseFloat(computedStyle.paddingLeft) -
-        parseFloat(computedStyle.paddingRight)
-      labelElem.style.width = `${labelElemWidth}px`;
-    };
-  });
+  if (labelElem) {
+    const computedStyle = getComputedStyle(labelElem);
+    const labelElemWidth =
+      labelElem.scrollWidth -
+      parseFloat(computedStyle.paddingLeft) -
+      parseFloat(computedStyle.paddingRight)
+    labelElem.style.width = `${labelElemWidth}px`;
+  };
 });
 
 function TextFromHTMLString(htmlString) {
@@ -64,9 +74,9 @@ function TextFromHTMLString(htmlString) {
       :class="props.mobile ? 'compact' : 'wide'"
     >
       <div v-if="!props.mobile">
-        <div class="sb-label">{{ TextFromHTMLString(animal[1]) }}</div>
+        <div class="sb-label">{{ animal[0] }}</div>
       </div>
-      <img :src="animal[0]" />
+      <img :src="animal[1]" />
     </div>
   </div>
 </template>

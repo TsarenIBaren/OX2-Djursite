@@ -2,8 +2,9 @@
 import translations from '/src/assets/translations.json';
 import { ref, onMounted, watch } from 'vue';
 import { RouterView, RouterLink } from 'vue-router';
-import { loadingMeta, loading, cookies, Images, AsyncImage } from '/src/assets/scripts/resourceApi.js';
-import * as fg2 from '/src/assets/scripts/fg2.js';
+import { loadingMeta, loading, cookies, Image } from '/src/assets/scripts/resourceApi.js';
+import * as fireflies from '/src/assets/scripts/fireflies.js';
+import * as snowfall from '/src/assets/scripts/snowfall.js';
 
 const isLoading = ref(loading);
 const isLoadingMeta = ref(loadingMeta);
@@ -36,34 +37,32 @@ window.addEventListener('resize', () => {
 });
 
 document.addEventListener('mousemove', (e) => {
-  MoveBackground(e);
-
   sessionStorage.setItem('mouseX', e.clientX);
   sessionStorage.setItem('mouseY', e.clientY);
 });
 
 //Fetch background
-AsyncImage((data) => {
+Image((data) => {
   bg.value = data[0];
 }, 242);
 //Fetch logo
-AsyncImage((data) => {
+Image((data) => {
   logo.value = data[0];
 }, 185);
 //Fetch en icon
-AsyncImage((data) => {
+Image((data) => {
   en.value = data[0];
 }, 632);
 //Fetch sv icon
-AsyncImage((data) => {
+Image((data) => {
   sv.value = data[0];
 }, 647);
 //Fetch de icon
-AsyncImage((data) => {
+Image((data) => {
   de.value = data[0];
 }, 643);
 //Fetch fi icon
-AsyncImage((data) => {
+Image((data) => {
   fi.value = data[0];
 }, 651);
 
@@ -71,6 +70,7 @@ onMounted(async () => {
   setInterval(() => {
     isLoading.value = loading;
     isLoadingMeta.value = loadingMeta;
+    MoveBackground();
   });
 });
 
@@ -104,31 +104,37 @@ function SwitchSeason() {
 function SwitchBackground() {
   switch (`${season.value} ${time.value}`) {
     case 'Summer Day':
-      AsyncImage((data) => {
+      Image((data) => {
         bg.value = data[0];
+        fireflies.Stop();
+        snowfall.Stop();
       }, 242);
       break;
     
     case 'Summer Night':
-      AsyncImage((data) => {
+      Image((data) => {
         bg.value = data[0];
+        fireflies.Play();
+        snowfall.Stop();
       }, 332);
       break;
 
     case 'Winter Day':
-      AsyncImage((data) => {
+      Image((data) => {
         bg.value = data[0];
+        fireflies.Stop();
+        snowfall.Stop();
       }, 841);
       break;
 
     case 'Winter Night':
-      AsyncImage((data) => {
+      Image((data) => {
         bg.value = data[0];
+        fireflies.Stop();
+        snowfall.Play();
       }, 842);
       break;
   };
-  
-  MoveBackground();
 };
 
 function MoveBackground(e={}) {
@@ -137,13 +143,8 @@ function MoveBackground(e={}) {
   let yep = false;
 
   if (e.detail == undefined) {
-    yep = true;
-    console.log(background);
-    e.clientX = parseFloat(sessionStorage.getItem('mouseX')) - 5000;
-    e.clientY = parseFloat(sessionStorage.getItem('mouseY')) - 5000;
-    background.onload = () => {
-      console.log('It loaded');
-    };
+    e.clientX = parseFloat(sessionStorage.getItem('mouseX'));
+    e.clientY = parseFloat(sessionStorage.getItem('mouseY'));
   };
 
   if (!touch) {
@@ -157,10 +158,6 @@ function MoveBackground(e={}) {
     background.style.top = '';
     background.style.right = '';
     background.style.bottom = '';
-  };
-
-  if (yep) {
-    console.log(background);
   };
 };
 

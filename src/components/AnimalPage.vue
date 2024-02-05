@@ -1,17 +1,18 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { Contents, AsyncImage } from '/src/assets/scripts/resourceApi.js';
+import { Contents, Image } from '/src/assets/scripts/resourceApi.js';
 
 const props = defineProps(['page']);
 const pages = ref({});
 
-onMounted(async () => {
-    const homepage = await(Contents(['tmfhomeinfo']));
-    pages.value[''] = homepage[0].content;
+Contents((data) => {
+    pages.value[''] = data[0].content;
 
-    const posts = await Contents(['tmfanimalinfo']);
-    for (let post of posts) {
-        AsyncImage((associatedImage => {
+},['tmfhomeinfo']);
+
+Contents((data) => {
+    for (let post of data) {
+        Image((associatedImage => {
             if (associatedImage) {
                 pages.value[associatedImage[1]] = post.content;
 
@@ -20,7 +21,7 @@ onMounted(async () => {
             };
         }), post.featured);
     };
-});
+} ,['tmfanimalinfo']);
 </script>
 <template>
     <div id="page" v-html="pages[page]" />

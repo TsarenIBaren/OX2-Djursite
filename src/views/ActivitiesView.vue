@@ -3,11 +3,9 @@ import { ref, onMounted } from 'vue';
 import { Contents } from '/src/assets/scripts/resourceApi.js';
 
 const page = ref(null);
-
-onMounted(async () => {
-    const data = await(Contents(['tmfactivitiespage']));
-    page.value = data[0].content;
-});
+Contents((data) => {
+  page.value = data[0].content;
+}, ['tmfactivitiespage']);
 </script>
 
 <template>

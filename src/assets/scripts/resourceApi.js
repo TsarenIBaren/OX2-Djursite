@@ -56,11 +56,10 @@ async function Tags() {
     };
 
     EndFetch(transaction);
-
     return result;
 };
 
-async function GetifyTags(tags) {
+function GetifyTags(tags) {
     let lang = 'sv';
     if (languages.includes(cookies['lang'])) {
         lang = cookies['lang'];
@@ -82,65 +81,54 @@ async function GetifyTags(tags) {
     return searchTags;
 };
 
-async function Contents(tags=[]) {
+function Contents(callback, tags=[]) {
     const transaction = BeginFetch();
 
-    const response = await fetch(`${wordpressPostUrl}/posts?per_page=100&tags=${await GetifyTags(tags)}`);
-    let result = null;
+    fetch(`${wordpressPostUrl}/posts?per_page=100&tags=${GetifyTags(tags)}`)
+    .then(response => {
+        if (response.ok) {
+            return response.json();
 
-    if (response.ok) {
-        const data = await response.json();
+        } else {
+            return null;
+        };
+    })
+    .then(data => {
+        let result;
+
         result = data.map((item) => {
             return {
                 content: item.content.rendered,
                 featured: item.featured_media
             };
         });
-    };
 
-    EndFetch(transaction);
-
-    return result;
-};
-
-async function Image(id, trueTitle=null) {
-
-    if (id) {
-        const transaction = BeginFetch();
-
-        const response = await fetch(`${wordpressPostUrl}/media/${id}`);
-        const data = await response.json();
-
+        callback(result);
         EndFetch(transaction);
-    
-        return [data.source_url, trueTitle ? trueTitle : data.title.rendered, data.title.rendered];
-    };
-
-    return;
+    });
 };
 
-async function Images(tags=[]) {
+function CustomData(callback, tags=[]) {
     const transaction = BeginFetch();
 
-    const response = await fetch(`${wordpressPostUrl}/posts?per_page=100&tags=${await GetifyTags(tags)}`);
-    const data = await response.json();
-    
-    let result = [];
+    fetch(`${wordpressPostUrl}/posts?per_page=100&tags=${GetifyTags(tags)}`)
+    .then(response => {
+        if (response.ok) {
+            return response.json();
 
-    for (let post of data) {
-        if (post.featured_media !== 0) {
-            const image = await Image(post.featured_media, post.content.rendered);
-            result.push(image);
+        } else {
+            return null;
         };
-    };
-    
-    EndFetch(transaction);
-
-    return result;
+    })
+    .then(data => {
+        callback(data);
+        EndFetch(transaction);
+    });
 };
 
-function AsyncImage(callback, id, trueTitle=null) {
+function Image(callback, id, trueTitle=null) {
     if (id) {
+        const transaction = BeginFetch();
         fetch(`${wordpressPostUrl}/media/${id}`)
         .then(response => {
             if (response.ok) {
@@ -156,8 +144,9 @@ function AsyncImage(callback, id, trueTitle=null) {
             } else {
                 callback([null, null]);
             };
+            EndFetch(transaction);
         });
     };
 }
 
-export {loadingMeta, loading, cookies, Contents, Images, AsyncImage};
+export {loadingMeta, loading, cookies, Contents, CustomData, Image};

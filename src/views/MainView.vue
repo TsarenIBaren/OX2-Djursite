@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import AnimalSidebar from '../components/AnimalSidebar.vue';
 import AnimalPage from '../components/AnimalPage.vue';
+import AnimalSideinfo from '../components/AnimalSideinfo.vue';
 
 const currentPage = ref('');
 function PageTo(page) {
@@ -26,10 +27,8 @@ onMounted(() => {
     <div class="content box">
       <AnimalPage :page="currentPage" />
     </div>
-    <div class="content box">
-      <img src="https://www.natur.ax/wp-content/uploads/2021/08/mockelo-havsbad.jpg" width=100%;>
-      <p>Very cool image caption and useful information.</p>
-      <p>Did you know that over any% of the population missed this critical information on the side here. Are people really that lazy? Yes, probably.</p>
+    <div class="content box" style="max-width:10em;">
+      <AnimalSideinfo :page="currentPage" />
     </div>
   </div>
 </template>
