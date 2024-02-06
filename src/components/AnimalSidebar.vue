@@ -15,6 +15,7 @@ CustomData((data) => {
           image[1]
         ]
       );
+      animals.value.sort((a, b) => {return a[2].localeCompare(b[2])});
     }, post.featured_media);
   };
 }, ['tmfanimalpic']);

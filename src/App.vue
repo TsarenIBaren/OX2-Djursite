@@ -190,8 +190,8 @@ function MoveBackground(e={}) {
     </div>
   </div>
   <div style="position:fixed; top:0; left:0;">
-    <button @click="SwitchTime()">Time: {{time}}</button>
-    <button @click="SwitchSeason()">Season: {{season}}</button>
+    <button class="tempbtn" @click="SwitchTime()">Time: {{time}}</button>
+    <button class="tempbtn" @click="SwitchSeason()">Season: {{season}}</button>
   </div>
 </template>
 
@@ -302,5 +302,10 @@ nav {
 
 #logo:hover {
   transform: scale(105%);
+}
+
+.tempbtn {
+  padding: 0.25em;
+  border: 0;
 }
 </style>

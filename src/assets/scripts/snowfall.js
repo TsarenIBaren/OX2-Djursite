@@ -8,7 +8,7 @@ let snowflakes = [];
 let offset = 100;
 const prewarm = 10 * fps;
 
-const ticksPerFlake = 2;
+const ticksPerFlake = 4;
 const minSize = 0.025;
 const sizeMpl = 0.05;
 const minSpeed = 1;
@@ -44,7 +44,7 @@ function Update(draw=true) {
     if (ticksPerFlake == ticks) {
         ticks = 0;
         snowflakes.push({
-            x: display.screenSize[0] * Math.random() + offset,
+            x: display.screenSize[0] * Math.random() - offset,
             y: offset - 128,
             size: Math.random() * sizeMpl + minSize,
             speed: speedMpl * Math.random() + minSpeed,
