@@ -26,7 +26,7 @@ for (let animal of animals) {
 
 </script>
 <template>
-    <div v-if="pages[page]" style="font-size:large; width:fit-content;">
+    <div v-if="pages[page]" style="font-size:large;">
         <img :src="pages[page][1]" width=200em>
         <div v-html="pages[page][0]" />
     </div>

@@ -5,7 +5,7 @@ const fps = 60;
 let interval;
 let ticks = 0;
 let snowflakes = [];
-let offset = 100;
+let offset = 0;
 const prewarm = 10 * fps;
 
 const ticksPerFlake = 4;
@@ -16,7 +16,8 @@ const speedMpl = 2;
 const minRotationSpeed = Math.PI / 128;
 const rotationSpeedMpl = Math.PI / 128;
 
-function Play() {
+function Play(off) {
+    offset = off;
     canvas = document.getElementById('fg-canvas');
     display.Flip(canvas);
 

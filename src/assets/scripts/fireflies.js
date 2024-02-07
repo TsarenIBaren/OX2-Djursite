@@ -4,7 +4,7 @@ let canvas;
 const fps = 60;
 let interval;
 let fireflies = [];
-let offset = 100;
+let offset = 0;
 const prewarm = 10 * fps;
 
 //DECENT SETTINGS
@@ -17,7 +17,8 @@ let turniness = Math.PI / 32;
 let minRotationSpeed = Math.PI / 128;
 let rotationSpeedMpl = Math.PI / 128;
 
-function Play() {
+function Play(off) {
+    offset = off;
     canvas = document.getElementById('fg-canvas');
     display.Flip(canvas);
 

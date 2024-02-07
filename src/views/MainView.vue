@@ -27,7 +27,7 @@ onMounted(() => {
     <div class="content box">
       <AnimalPage :page="currentPage" />
     </div>
-    <div class="content box" style="overflow: unset; width:fit-content;">
+    <div class="content box" style="overflow: unset;" :style="mobile ? 'flex-grow:1; text-align:center;' : 'width:fit-content;'">
       <AnimalSideinfo :page="currentPage" />
     </div>
   </div>

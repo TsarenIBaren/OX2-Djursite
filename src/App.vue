@@ -19,6 +19,7 @@ const fi = ref(null);
 
 const time = ref('Day');
 const season = ref('Summer');
+const parallaxAmount = 100;
 
 const mobileBreakpoint = 1024;
 const mobile = ref(window.innerWidth < mobileBreakpoint);
@@ -114,7 +115,7 @@ function SwitchBackground() {
     case 'Summer Night':
       Image((data) => {
         bg.value = data[0];
-        fireflies.Play();
+        fireflies.Play(parallaxAmount * !mobile.value);
         snowfall.Stop();
       }, 332);
       break;
@@ -131,7 +132,7 @@ function SwitchBackground() {
       Image((data) => {
         bg.value = data[0];
         fireflies.Stop();
-        snowfall.Play();
+        snowfall.Play(parallaxAmount * !mobile.value);
       }, 842);
       break;
   };
@@ -139,7 +140,6 @@ function SwitchBackground() {
 
 function MoveBackground(e={}) {
   const background = document.getElementById('bg');
-  const parallaxAmount = 100;
   let yep = false;
 
   if (e.detail == undefined) {

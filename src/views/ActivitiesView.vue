@@ -6,6 +6,13 @@ const box1 = ref(null);
 const box2 = ref(null);
 const trailmap = ref(null);
 
+const mobileBreakpoint = 1024;
+const mobile = ref(window.innerWidth < mobileBreakpoint);
+
+window.addEventListener('resize', () => {
+  mobile.value = window.innerWidth < mobileBreakpoint;
+});
+
 Image((image) => {
     if (image) {
         trailmap.value = image[0];
@@ -22,21 +29,22 @@ Contents((data) => {
 </script>
 
 <template>
-  <div id="temp" class="content box" v-html=box1 />
-  <div id="trailmap">
-    <div id="temp" class="content box" v-html=box2 />
-    <div v-if="trailmap" class="content box" style="overflow: unset;">
-      <img  :src="trailmap" height=400em;>
+  <div class="content box" v-html=box1 />
+  <div id="trailmap" :style="mobile ? 'flex-wrap:wrap;' : ''">
+    <div class="content box" v-html=box2 />
+    <div class="content box">
+      <img v-if="trailmap" :src="trailmap" style="max-width:100%;">
     </div>
   </div>
 </template>
 
 <style scoped>
-#temp :deep(*) {
-    text-align: center;
+.content :deep(*) {
+  text-align: center;
 }
 
 #trailmap {
   display: flex;
 }
+
 </style>
